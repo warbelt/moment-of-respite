@@ -11,6 +11,8 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] private int _maxAmmo;
     [SerializeField] private float _bulletSpeed;
     [SerializeField] public float _bulletSpeedBonus = 0;
+    [SerializeField] public float _damageBonus = 0;
+    [SerializeField] public float _shootSpeedBonus = 0;
 
     [SerializeField] private bool _shootStraight = true;
 
@@ -43,6 +45,7 @@ public class PlayerWeapon : MonoBehaviour
             }
             projectileInstance.transform.position = transform.position;
             projectileInstance.SetSpeed(_bulletSpeed + _bulletSpeedBonus);
+            projectileInstance.SetBonusDamage(projectileInstance.GetBonusDamage() + _damageBonus);
 
             _ammo -= 1;
             onAmmoCountChange?.Invoke(_ammo, _maxAmmo);
@@ -53,7 +56,8 @@ public class PlayerWeapon : MonoBehaviour
 
     private void UpdateNextShoot()
     {
-        _nextShoot = Time.time + (1 / _shootsPerSecond);
+        _nextShoot = Time.time + (1 / (_shootsPerSecond * (1 + _shootSpeedBonus / 100)));
+        print((1 / (_shootsPerSecond * (1 + _shootSpeedBonus / 100))));
     }
 
     public int GetAmmo()

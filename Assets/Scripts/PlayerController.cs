@@ -28,16 +28,36 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _bonusMaxHealth = 0;
     [SerializeField] private float _bonusMoveSpeed = 0;
     [SerializeField] private float _bonusMaxShieldCharge = 0;
-    [SerializeField] private float _bulletSpeedBonus = 0;
+    [SerializeField] private float _bonusBulletSpeed = 0;
     [SerializeField] private float _bonusDamage = 0;
     [SerializeField] private float _bonusShootSpeed = 0;
 
-    private float BulletSpeedBonus { 
-        get => _bulletSpeedBonus;
+    private float BonusBulletSpeed { 
+        get => _bonusBulletSpeed;
         set
         {
-            _bulletSpeedBonus = value;
-            _weapon._bulletSpeedBonus = _bulletSpeedBonus;
+            _bonusBulletSpeed = value;
+            _weapon._bulletSpeedBonus = _bonusBulletSpeed;
+        }
+    }
+
+    private float BonusDamage
+    {
+        get => _bonusDamage;
+        set
+        {
+            _bonusDamage = value;
+            _weapon._damageBonus = _bonusDamage;
+        }
+    }
+
+    private float BonusShootSpeed
+    {
+        get => _bonusShootSpeed;
+        set
+        {
+            _bonusShootSpeed = value;
+            _weapon._shootSpeedBonus = _bonusShootSpeed;
         }
     }
 
@@ -137,7 +157,7 @@ public class PlayerController : MonoBehaviour
         _bonusMaxHealth = 0;
         _bonusMoveSpeed = 0;
         _bonusMaxShieldCharge = 0;
-        BulletSpeedBonus = 0;
+        BonusBulletSpeed = 0;
         _bonusDamage = 0;
         _bonusShootSpeed = 0;
     }
@@ -247,10 +267,19 @@ public class PlayerController : MonoBehaviour
                 ShieldCharge = ShieldCharge;
                 break;
             case 3:
+                bonus = 4;
+                concept = "Missile Speed";
+                BonusBulletSpeed += bonus;
                 break;
             case 4:
+                bonus = 1;
+                concept = "Damage";
+                BonusDamage += bonus;
                 break;
             case 5:
+                bonus = 20;
+                concept = "% Shooting Speed";
+                BonusShootSpeed += bonus;
                 break;
             default: 
                 return "";

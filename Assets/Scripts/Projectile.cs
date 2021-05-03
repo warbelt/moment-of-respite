@@ -8,7 +8,8 @@ public class Projectile : MonoBehaviour
 {
     [SerializeField] float _speed = 1;
     [SerializeField] float _timeToLive = 5;
-    [SerializeField] float _damage = 1;
+    [SerializeField] float _baseDamage = 1;
+    [SerializeField] float _bonusDamage = 1;
 
 
     [SerializeField] Rigidbody2D _rb2D;
@@ -24,8 +25,22 @@ public class Projectile : MonoBehaviour
         _rb2D.velocity = transform.up * speed;
     }
 
+    public void SetDamage(float damage)
+    {
+        _baseDamage = damage;
+    }
+    public void SetBonusDamage(float damage)
+    {
+        _bonusDamage = damage;
+    }
+
+    public float GetBonusDamage()
+    {
+        return _bonusDamage;
+    }
+
     public float GetDamage()
     {
-        return _damage;
+        return _baseDamage + _bonusDamage;
     }
 }

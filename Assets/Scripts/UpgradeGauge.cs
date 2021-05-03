@@ -22,13 +22,13 @@ public class UpgradeGauge : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float _endHigh;
     [SerializeField] private float _endMid;
     [SerializeField] private float _endLow;
+    [SerializeField] private int _pointsNeededForBar = 10;
 
     // Events
     public event Action OnGaugeFull;
 
     //State
     private bool _movingright;
-    private int _pointsNeededForBar = 10;
     private int _pointsProgress;
     private int PointsProgress
     {
@@ -110,7 +110,6 @@ public class UpgradeGauge : MonoBehaviour, IPointerClickHandler
         {
             OnGaugeFull?.Invoke();
             PointsProgress = 0;
-            _pointsNeededForBar = (int)(_pointsNeededForBar * 1.2);
         }
     }
 }
