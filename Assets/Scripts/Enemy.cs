@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
     private bool _alive;
 
     public event Action<Enemy> OnDeath;
-
+    public event Action<Enemy> OnBoundaryExit;
 
     private void Awake()
     {
@@ -48,9 +48,12 @@ public class Enemy : MonoBehaviour
             {
                 Damage(hittingProjectile.GetDamage());
                 Destroy(collision.gameObject);
-
             } 
+        }
 
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("GameBoundaries"))
+        {
+            OnBoundaryExit?.Invoke(this);
         }
     }
 
