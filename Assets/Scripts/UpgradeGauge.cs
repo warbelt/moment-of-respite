@@ -85,7 +85,6 @@ public class UpgradeGauge : MonoBehaviour, IPointerClickHandler
     {
 
         float progress = (_movingGauge.rectTransform.anchoredPosition.x - minX) / (maxX - minX);
-        print(progress);
 
         if (progress < _startLow || progress > _endLow)
         {
@@ -103,8 +102,6 @@ public class UpgradeGauge : MonoBehaviour, IPointerClickHandler
 
     private void UpdateProgress(int points)
     {
-        print(points);
-
         PointsProgress += points;
         if (PointsProgress >= _pointsNeededForBar)
         {

@@ -22,6 +22,17 @@ public class GameController : MonoBehaviour
     //State
     bool _isPlaying;
     float nextEnemySpawn;
+    List<Enemy> _spawnedEnemies;
+    int _gameScore;
+    int GameScore
+    {
+        get { return _gameScore; }
+        set
+        {
+            _gameScore = value;
+            SetScore(_gameScore);
+        }
+    }
 
 
     private void Awake()
@@ -36,7 +47,7 @@ public class GameController : MonoBehaviour
         _uiController.StartDown();
         StartCoroutine(StartRound());
         _uiController.OnUpgradeGaugeFull += UpgradePlayer;
-
+        _uiController.OnReplayButtonPushed += ReplaySignal;
 
         // Initialize Enemy Spawn
         nextEnemySpawn = Time.time + waveSpawnInterval;
@@ -58,7 +69,9 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < waveSize; i++)
         {
-            Instantiate(enemy, new Vector3(Random.Range(enemyStartMinX, enemyStartMaxX), enemyStartY, 0), Quaternion.Euler(0,0,180));
+            Enemy enemyInstance = Instantiate(enemy, new Vector3(Random.Range(enemyStartMinX, enemyStartMaxX), enemyStartY, 0), Quaternion.Euler(0,0,180));
+            enemyInstance.OnDeath += EnemyDeathHandler;
+            _spawnedEnemies.Add(enemyInstance);
             yield return new WaitForSeconds(enemySpawnInterval);
         }
 
@@ -68,8 +81,11 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         StartCoroutine(_uiController.ShiftUp());
+        _player.onDeath += PlayerDead;
         _player.enabled = true;
         _player.InitializeState();
+        GameScore = 0;
+        _spawnedEnemies = new List<Enemy>();
 
         _isPlaying = true;
     }
@@ -111,5 +127,54 @@ public class GameController : MonoBehaviour
     {
         string upgradeText = _player.ApplyRandomUpgrade();
         StartCoroutine(_uiController.DisplayUpgradeText(upgradeText));
+    }
+
+    public void EnemyDeathHandler(Enemy caller)
+    {
+        GameScore += caller.GetPointsValue();
+        _spawnedEnemies.Remove(caller);
+    }
+
+    private void SetScore(int score)
+    {
+        _uiController.SetScoreText(score);
+    }
+
+    private void PlayerDead()
+    {
+        _uiController.ActivateReplayButton();
+    }
+
+    private void ReplaySignal()
+    {
+        if(_isPlaying)
+        {
+            RestartGame();
+        }
+    }
+
+    private void RestartGame()
+    {
+        DespawnEnemies();
+
+        _player.ResetGame();
+        _uiController.ResetGame();
+        
+        GameScore = 0;
+        StopAllCoroutines();
+        StartCoroutine(StartRound());
+    }
+
+    private void DespawnEnemies()
+    {
+        foreach(Enemy enemy in _spawnedEnemies)
+        {
+            DespawnEnemy(enemy);
+        }
+    }
+
+    private void DespawnEnemy(Enemy enemy)
+    {
+        Destroy(enemy.gameObject);
     }
 }

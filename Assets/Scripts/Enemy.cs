@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _maxHealth;
     [SerializeField] private Vector3 _speed;
+    [SerializeField] private int _pointsValue = 1;
 
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private Collider2D _collider;
@@ -19,7 +20,7 @@ public class Enemy : MonoBehaviour
     private float _health;
     private bool _alive;
 
-    public event Action OnDeath;
+    public event Action<Enemy> OnDeath;
 
 
     private void Awake()
@@ -29,11 +30,11 @@ public class Enemy : MonoBehaviour
         _weapons = GetComponentsInChildren<BulletGenerator>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (_alive)
         {
-            Vector3 movementVector = _speed * Time.deltaTime;
+            Vector3 movementVector = _speed * Time.fixedDeltaTime;
             _rb.MovePosition(transform.position + movementVector);
         }
     }
@@ -64,7 +65,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Die()
+    public void Die()
     {
         _alive = false;
 
@@ -75,7 +76,12 @@ public class Enemy : MonoBehaviour
         }
 
         _deathParticles.Emit(50);
-        OnDeath?.Invoke();
+        OnDeath?.Invoke(this);
         Destroy(gameObject, 0.5f);
+    }
+
+    public int GetPointsValue()
+    {
+        return _pointsValue;
     }
 }
