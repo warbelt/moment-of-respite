@@ -71,6 +71,7 @@ public class GameController : MonoBehaviour
         {
             Enemy enemyInstance = Instantiate(enemy, new Vector3(Random.Range(enemyStartMinX, enemyStartMaxX), enemyStartY, 0), Quaternion.Euler(0,0,180));
             enemyInstance.OnDeath += EnemyDeathHandler;
+            enemyInstance.OnBoundaryExit += EnemyOutOfBoundaryhandler;
             _spawnedEnemies.Add(enemyInstance);
             yield return new WaitForSeconds(enemySpawnInterval);
         }
@@ -169,12 +170,20 @@ public class GameController : MonoBehaviour
     {
         foreach(Enemy enemy in _spawnedEnemies)
         {
-            DespawnEnemy(enemy);
+            DespawnEnemy(enemy, false);
         }
+
+        _spawnedEnemies.Clear();
     }
 
-    private void DespawnEnemy(Enemy enemy)
+    private void EnemyOutOfBoundaryhandler(Enemy enemy)
     {
+        DespawnEnemy(enemy);
+    }
+
+    private void DespawnEnemy(Enemy enemy, bool clearFromList = true)
+    {
+        if (clearFromList) _spawnedEnemies.Remove(enemy);
         Destroy(enemy.gameObject);
     }
 }
