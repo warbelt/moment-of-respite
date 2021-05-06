@@ -231,7 +231,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 5
-  _speed: {x: 3, y: -10, z: 0}
+  _speed: {x: 1, y: -3.3, z: 0}
+  _pointsValue: 1
   _rb: {fileID: 5166067097645887260}
   _collider: {fileID: 5166067097645887261}
   _damageParticles: {fileID: 5166067099513945918}

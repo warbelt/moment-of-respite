@@ -29,18 +29,35 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _timer;
     [SerializeField] private UpgradeGauge _upgradeGauge;
     [SerializeField] private TextMeshProUGUI _upgradeText;
+    [SerializeField] private TextMeshProUGUI _shieldDepletedText;
+    [SerializeField] private TextMeshProUGUI _ammoDepletedText;
+    [SerializeField] private TextMeshProUGUI _gameScoreText;
+    [SerializeField] private Button _replayButton;
+
+
+    private bool _shieldDepletedTextFlashing = false;
+    private bool _ammoDepletedTextFlashing = false;
 
     // UI Events
     public event Action OnUpgradeGaugeFull;
+    public event Action OnReplayButtonPushed;
 
     // Start is called before the first frame update
     void Start()
     {
+        _playerWeapon = _player.GetComponent<PlayerWeapon>();
+        
         _respiteUI.gameObject.SetActive(false);
+        _replayButton.gameObject.SetActive(false);
 
+        _ammoDepletedTextFlashing = false;
+        _shieldDepletedTextFlashing = false;
+        
         _player.onHealthChange += UpdateHealthBar;
         _player.onShieldChange += UpdateShieldBar;
-        _playerWeapon = _player.GetComponent<PlayerWeapon>();
+        _player.onShieldDepleted += ShieldDepletedHandler;
+        _playerWeapon.onAmmoDepleted += AmmoDepletedHandler;
+
         _playerWeapon.onAmmoCountChange += UpdateAmmo;
 
         BulletRecharge[] _bulletRecharges = _ammoRechargeContainer.GetComponentsInChildren<BulletRecharge>();
@@ -61,7 +78,64 @@ public class UIController : MonoBehaviour
         _upgradeText.text = "";
 
         SetTimer("");
+    }
 
+    private void ShieldDepletedHandler()
+    {
+        if (!_shieldDepletedTextFlashing)
+        {
+            StartCoroutine(FlashShieldText(3));
+        }
+    }
+    
+    private void AmmoDepletedHandler()
+    {
+        if (!_ammoDepletedTextFlashing)
+        {
+            StartCoroutine(FlashAmmoText(3));
+        }
+    }
+
+    private IEnumerator FlashShieldText(float duration)
+    {
+        if (!_shieldDepletedTextFlashing)
+        {
+            _shieldDepletedTextFlashing = true;
+        }
+
+        float elapsed = 0;
+        float interval = 0.5f;
+
+        while(elapsed <= duration && _shieldDepletedTextFlashing)
+        {
+            _shieldDepletedText.enabled = !_shieldDepletedText.enabled;
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+
+        _shieldDepletedTextFlashing = false;
+        _shieldDepletedText.enabled = false;
+    }
+
+    private IEnumerator FlashAmmoText(float duration)
+    {
+        if (!_ammoDepletedTextFlashing)
+        {
+            _ammoDepletedTextFlashing = true;
+        }
+
+        float elapsed = 0;
+        float interval = 0.5f;
+
+        while (elapsed <= duration && _ammoDepletedTextFlashing)
+        {
+            _ammoDepletedText.enabled = !_ammoDepletedText.enabled;
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+
+        _ammoDepletedTextFlashing = false;
+        _ammoDepletedText.enabled = false;
     }
 
     public void UpdateHealthBar(float health, float maxHealth)
@@ -286,5 +360,25 @@ public class UIController : MonoBehaviour
 
         _upgradeText.rectTransform.anchoredPosition = Vector2.zero;
         yield return new WaitForSeconds(1.5f);
+    }
+
+    public void SetScoreText(int score)
+    {
+        _gameScoreText.text = score.ToString();
+    }
+
+    public void ActivateReplayButton()
+    {
+        _replayButton.gameObject.SetActive(true);
+    }
+
+    public void ReplayButtonPushed()
+    {
+        OnReplayButtonPushed?.Invoke();
+    }
+
+    public void ResetGame()
+    {
+        _replayButton.gameObject.SetActive(false);
     }
 }

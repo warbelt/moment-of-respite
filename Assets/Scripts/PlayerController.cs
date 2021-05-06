@@ -6,13 +6,15 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Scene References")]
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private Collider2D _collider;
     [SerializeField] private GameObject _shield;
     [SerializeField] private PlayerWeapon _weapon;
     [SerializeField] private ParticleSystem _damageParticles;
     [SerializeField] private ParticleSystem _deathParticles;
+    [SerializeField] private Transform _startPosition;
+    [SerializeField] private SpriteRenderer _renderer;
 
     // Stats
     [Header("Stats")]
@@ -40,7 +42,6 @@ public class PlayerController : MonoBehaviour
             _weapon._bulletSpeedBonus = _bonusBulletSpeed;
         }
     }
-
     private float BonusDamage
     {
         get => _bonusDamage;
@@ -50,7 +51,6 @@ public class PlayerController : MonoBehaviour
             _weapon._damageBonus = _bonusDamage;
         }
     }
-
     private float BonusShootSpeed
     {
         get => _bonusShootSpeed;
@@ -60,7 +60,6 @@ public class PlayerController : MonoBehaviour
             _weapon._shootSpeedBonus = _bonusShootSpeed;
         }
     }
-
 
 
     // State
@@ -95,6 +94,8 @@ public class PlayerController : MonoBehaviour
 
     private bool _shieldActive;
     private bool _isAlive;
+    private bool _isControllable;
+
 
     [Header("Movement Constraints")]
     [SerializeField] private float minX;
@@ -104,25 +105,31 @@ public class PlayerController : MonoBehaviour
 
     public event Action<float, float> onHealthChange;
     public event Action<float, float> onShieldChange;
+    public event Action onShieldDepleted;
+    public event Action onAmmoDepleted;
+    public event Action onDeath;
 
     private Vector2 _moveDirection;
     private bool _isShooting;
 
     private void FixedUpdate()
     {
-        float newX = _rb.position.x + _moveDirection.normalized.x * (_moveSpeed+_bonusMoveSpeed) * Time.fixedDeltaTime;
-        float newY = _rb.position.y + _moveDirection.normalized.y * (_moveSpeed+_bonusMoveSpeed) * Time.fixedDeltaTime;
-        _rb.MovePosition(new Vector2(Mathf.Clamp(newX, minX, maxX), Mathf.Clamp(newY, minY, maxY)));
+        if (_isAlive && _isControllable)
+        {
+            float newX = _rb.position.x + _moveDirection.normalized.x * (_moveSpeed+_bonusMoveSpeed) * Time.fixedDeltaTime;
+            float newY = _rb.position.y + _moveDirection.normalized.y * (_moveSpeed+_bonusMoveSpeed) * Time.fixedDeltaTime;
+            _rb.MovePosition(new Vector2(Mathf.Clamp(newX, minX, maxX), Mathf.Clamp(newY, minY, maxY)));
+        }
     }
 
     private void Update()
     {
-        if (_isShooting)
+        if (_isShooting && _isAlive && _isControllable)
         {
             Shoot();
         }
 
-        if (_shieldActive)
+        if (_shieldActive && _isAlive && _isControllable)
         {
             ShieldCharge -= _shieldUsePerSecond * Time.deltaTime;
         }
@@ -148,18 +155,20 @@ public class PlayerController : MonoBehaviour
     public void InitializeState()
     {
         _isAlive = true;
+        _isControllable = true;
         _shieldActive = false;
         _isShooting = false;
-
-        Health = _maxHealth;
-        ShieldCharge = _maxShieldCharge;
 
         _bonusMaxHealth = 0;
         _bonusMoveSpeed = 0;
         _bonusMaxShieldCharge = 0;
         BonusBulletSpeed = 0;
-        _bonusDamage = 0;
-        _bonusShootSpeed = 0;
+        BonusDamage = 0;
+        BonusShootSpeed = 0;
+
+        _weapon.ResetGame();
+        Health = _maxHealth;
+        ShieldCharge = _maxShieldCharge;
     }
 
     private void Shoot()
@@ -171,7 +180,19 @@ public class PlayerController : MonoBehaviour
     {
         _shieldActive = true;
         _shield.SetActive(true);
-        yield return new WaitForSeconds(_shieldDuration);
+
+        float endTime = Time.time + _shieldDuration;
+
+        while(ShieldCharge > 0 && Time.time < endTime)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (ShieldCharge == 0)
+        {
+            onShieldDepleted?.Invoke();
+        }
+
         _shield.SetActive(false);
         _shieldActive = false;
     }
@@ -198,7 +219,8 @@ public class PlayerController : MonoBehaviour
         if (Health <= 0)
         {
             _deathParticles.Emit(50);
-            enabled = false;
+            DisableControl();
+            onDeath?.Invoke();
         }
     }
 
@@ -287,5 +309,40 @@ public class PlayerController : MonoBehaviour
         }
 
         return String.Format("+{0} {1}", bonus, concept);
+    }
+
+    public void ResetGame()
+    {
+        RestartPosition();
+        InitializeState();
+    }
+
+    public void DisableControl()
+    {
+        _isControllable = false;
+    }
+    
+    public void EnableControl()
+    {
+        _isControllable = true;
+    }
+
+    private void RestartPosition()
+    {
+        transform.position = _startPosition.position;
+        StartCoroutine(Flash());
+    }
+
+    private IEnumerator Flash()
+    {
+        float endTime = Time.time + 2;
+
+        while (Time.time < endTime)
+        {
+            _renderer.enabled = !_renderer.enabled;
+            yield return new WaitForSeconds(0.3f);
+        }
+
+        _renderer.enabled = true;
     }
 }

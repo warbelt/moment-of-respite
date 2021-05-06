@@ -16,14 +16,24 @@ public class PlayerWeapon : MonoBehaviour
 
     [SerializeField] private bool _shootStraight = true;
 
-    private float _nextShoot; 
+    private float _nextShoot;
     private int _ammo;
+    private int Ammo
+    {
+        get { return _ammo;  }
+        set
+        {
+            _ammo = value;
+            onAmmoCountChange?.Invoke(Ammo, _maxAmmo);
+        }
+    }
 
     public event Action<int, int> onAmmoCountChange;
+    public event Action onAmmoDepleted;
 
     private void Awake()
     {
-        _ammo = _maxAmmo;
+        Ammo = _maxAmmo;
     }
 
     private void OnEnable()
@@ -33,7 +43,7 @@ public class PlayerWeapon : MonoBehaviour
 
     public void Shoot(Vector2 mousePos)
     {
-        if (_nextShoot <= Time.time)
+        if (_nextShoot <= Time.time && Ammo > 0)
         {
             Projectile projectileInstance = Instantiate(_projectilePrefab);
 
@@ -47,28 +57,35 @@ public class PlayerWeapon : MonoBehaviour
             projectileInstance.SetSpeed(_bulletSpeed + _bulletSpeedBonus);
             projectileInstance.SetBonusDamage(projectileInstance.GetBonusDamage() + _damageBonus);
 
-            _ammo -= 1;
-            onAmmoCountChange?.Invoke(_ammo, _maxAmmo);
+            Ammo -= 1;
 
             UpdateNextShoot();
+        }
+
+        if (Ammo <= 0)
+        {
+            onAmmoDepleted?.Invoke();
         }
     }
 
     private void UpdateNextShoot()
     {
         _nextShoot = Time.time + (1 / (_shootsPerSecond * (1 + _shootSpeedBonus / 100)));
-        print((1 / (_shootsPerSecond * (1 + _shootSpeedBonus / 100))));
     }
 
     public int GetAmmo()
     {
-        return _ammo;
+        return Ammo;
     }
 
     public void Recharge()
     {
-        _ammo += 10;
-        onAmmoCountChange?.Invoke(_ammo, _maxAmmo);
-        print(_ammo);
+        Ammo += 10;
+    }
+
+    public void ResetGame()
+    {
+        Ammo = _maxAmmo;
+        UpdateNextShoot();
     }
 }
