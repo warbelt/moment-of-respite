@@ -34,8 +34,7 @@ public class Enemy : MonoBehaviour
     {
         if (_alive)
         {
-            Vector3 movementVector = _speed * Time.fixedDeltaTime;
-            _rb.MovePosition(transform.position + movementVector);
+            Move();
         }
     }
 
@@ -80,11 +79,16 @@ public class Enemy : MonoBehaviour
 
         _deathParticles.Emit(50);
         OnDeath?.Invoke(this);
-        Destroy(gameObject, 0.5f);
     }
 
     public int GetPointsValue()
     {
         return _pointsValue;
+    }
+
+    private void Move()
+    {
+        Vector3 movementVector = _speed * Time.fixedDeltaTime;
+        _rb.MovePosition(transform.position + movementVector);
     }
 }

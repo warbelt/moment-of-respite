@@ -134,6 +134,7 @@ public class GameController : MonoBehaviour
     {
         GameScore += caller.GetPointsValue();
         _spawnedEnemies.Remove(caller);
+        Destroy(caller, 0.5f);
     }
 
     private void SetScore(int score)

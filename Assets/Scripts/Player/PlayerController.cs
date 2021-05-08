@@ -200,8 +200,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") ||
-            collision.gameObject.layer == LayerMask.NameToLayer("EnemyProjectile"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyProjectile"))
         {
             if (!_shieldActive) { 
                 Damage();
