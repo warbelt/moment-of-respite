@@ -15541,10 +15541,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemiesInfo:
-  - enemyPrefab: {fileID: -2543690035059142811, guid: f95c0843d0dc6da43a4cf26351ead2d0, type: 3}
-    minRound: 0
-    maxRound: 0
   - enemyPrefab: {fileID: 5166067097645887262, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+    minRound: 1
+    maxRound: 1
+  - enemyPrefab: {fileID: -2543690035059142811, guid: f95c0843d0dc6da43a4cf26351ead2d0, type: 3}
     minRound: 1
     maxRound: 1
   - enemyPrefab: {fileID: 2217308609229647688, guid: 2d63fbbf16c2b004684ef28219e05b4a, type: 3}
