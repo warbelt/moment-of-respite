@@ -20,6 +20,8 @@ public class EnemyHover : Enemy
     private float _lerpSpeed;
     [SerializeField]
     private float _retargetWaitTime;
+    [SerializeField]
+    private float _retargetMinDistance;
 
     private Vector3 _targetPosition;
 
@@ -41,15 +43,37 @@ public class EnemyHover : Enemy
 
     private void AcquireNewTargetPosition()
     {
-        float _newX = Random.Range(_minX, _maxX);
-        float _newY = Random.Range(_minY, _maxY);
+        float _newX, _newY;
 
-        _targetPosition = new Vector3(_newX, _newY, 0f);
+        do
+        {
+            _newX = Random.Range(_minX, _maxX);
+            _newY = Random.Range(_minY, _maxY);
+
+            _targetPosition = new Vector3(_newX, _newY, 0f);
+        } while (Vector3.Distance(_targetPosition, transform.position) < _retargetMinDistance);
     }
 
     private IEnumerator PrepareNewPosition()
     {
         yield return new WaitForSeconds(_retargetWaitTime);
         AcquireNewTargetPosition();
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Vector2[] corners =
+        {
+            new Vector2(_minX, _minY),
+            new Vector2(_maxX, _minY),
+            new Vector2(_maxX, _maxY),
+            new Vector2(_minX, _maxY),
+        };
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(corners[0], corners[1]);
+        Gizmos.DrawLine(corners[1], corners[2]);
+        Gizmos.DrawLine(corners[2], corners[3]);
+        Gizmos.DrawLine(corners[3], corners[0]);
     }
 }

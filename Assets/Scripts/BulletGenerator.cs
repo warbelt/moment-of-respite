@@ -30,7 +30,7 @@ public class BulletGenerator : MonoBehaviour
         }
         else
         {
-            transform.Rotate(new Vector3(0, 0, _settings.angularVelocity * Time.deltaTime));
+            transform.Rotate(new Vector3(0, 0, _settings.angularVelocityDegs * Time.deltaTime));
         }
 
     }
@@ -46,7 +46,8 @@ public class BulletGenerator : MonoBehaviour
         {
             float angle = (-0.5f + i / (_settings.bulletsPerWave-1f)) * _settings.coneAperture;
             Projectile instancedBullet = Instantiate(_bullet, transform.position, transform.rotation);
-            //Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + angle)
+            instancedBullet.transform.localRotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + angle);
+            instancedBullet.SetSpeed();
         }
 
         if (_settings.repeat)
