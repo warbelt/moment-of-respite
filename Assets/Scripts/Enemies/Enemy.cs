@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     public event Action<Enemy> OnDeath;
     public event Action<Enemy> OnBoundaryExit;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _health = _maxHealth;
         _alive = true;
