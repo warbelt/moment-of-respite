@@ -7,22 +7,13 @@ public class GameController : MonoBehaviour
     [SerializeField] private PlayerController _player;
     [SerializeField] private UIController _uiController;
     [SerializeField] private ParticleSystem _bgParticles;
-
-    [SerializeField] Enemy enemy;
-    [SerializeField] float enemyStartY;
-    [SerializeField] float enemyStartMinX;
-    [SerializeField] float enemyStartMaxX;
-
+    [SerializeField] private EnemySpawner _enemySpawner;
 
     // Game configuration
-    [SerializeField] float enemySpawnInterval;
-    [SerializeField] float waveSpawnInterval;
     [SerializeField] float roundDuration = 10;
 
     //State
     bool _isPlaying;
-    float nextEnemySpawn;
-    List<Enemy> _spawnedEnemies;
     int _gameScore;
     int GameScore
     {
@@ -33,7 +24,7 @@ public class GameController : MonoBehaviour
             SetScore(_gameScore);
         }
     }
-
+    int _round;
 
     private void Awake()
     {
@@ -45,38 +36,14 @@ public class GameController : MonoBehaviour
     {
         // Initialize UI
         _uiController.StartDown();
-        StartCoroutine(StartRound());
         _uiController.OnUpgradeGaugeFull += UpgradePlayer;
         _uiController.OnReplayButtonPushed += ReplaySignal;
 
-        // Initialize Enemy Spawn
-        nextEnemySpawn = Time.time + waveSpawnInterval;
-    }
+        // Initialize Managers
+        _enemySpawner.Initialize();
 
-    private void Update()
-    {
-        if (Time.time >= nextEnemySpawn)
-        {
-            StartCoroutine(Spawn());
-
-            nextEnemySpawn = Time.time + waveSpawnInterval;
-        }
-    }
-
-    private IEnumerator Spawn()
-    {
-        int waveSize = Random.Range(1, 5);
-
-        for (int i = 0; i < waveSize; i++)
-        {
-            Enemy enemyInstance = Instantiate(enemy, new Vector3(Random.Range(enemyStartMinX, enemyStartMaxX), enemyStartY, 0), Quaternion.Euler(0,0,180));
-            enemyInstance.OnDeath += EnemyDeathHandler;
-            enemyInstance.OnBoundaryExit += EnemyOutOfBoundaryhandler;
-            _spawnedEnemies.Add(enemyInstance);
-            yield return new WaitForSeconds(enemySpawnInterval);
-        }
-
-        yield return null;
+        // Start game
+        StartCoroutine(StartRound());
     }
 
     public void StartGame()
@@ -86,13 +53,16 @@ public class GameController : MonoBehaviour
         _player.enabled = true;
         _player.InitializeState();
         GameScore = 0;
-        _spawnedEnemies = new List<Enemy>();
+        _round = 0;
 
+        _enemySpawner.onPointsGained += PointsGainedHandler;
         _isPlaying = true;
     }
 
     public IEnumerator EnterRespite()
     {
+        _enemySpawner.StopSpawning();
+
         float activateDuration = 1;
         float respiteDuration = 10;
 
@@ -120,7 +90,10 @@ public class GameController : MonoBehaviour
 
     private IEnumerator StartRound()
     {
-        yield return new WaitForSeconds(20);
+        _round += 1;
+        _enemySpawner.StartSpawning(_round);
+
+        yield return new WaitForSeconds(30);
         StartCoroutine(EnterRespite());
     }
 
@@ -128,13 +101,6 @@ public class GameController : MonoBehaviour
     {
         string upgradeText = _player.ApplyRandomUpgrade();
         StartCoroutine(_uiController.DisplayUpgradeText(upgradeText));
-    }
-
-    public void EnemyDeathHandler(Enemy caller)
-    {
-        GameScore += caller.GetPointsValue();
-        _spawnedEnemies.Remove(caller);
-        Destroy(caller, 0.5f);
     }
 
     private void SetScore(int score)
@@ -157,34 +123,21 @@ public class GameController : MonoBehaviour
 
     private void RestartGame()
     {
-        DespawnEnemies();
+        StopAllCoroutines();
+        
+        _enemySpawner.DespawnAllEnemies();
 
         _player.ResetGame();
         _uiController.ResetGame();
         
         GameScore = 0;
-        StopAllCoroutines();
+        _round = 0;
+
         StartCoroutine(StartRound());
     }
 
-    private void DespawnEnemies()
+    private void PointsGainedHandler(int points)
     {
-        foreach(Enemy enemy in _spawnedEnemies)
-        {
-            DespawnEnemy(enemy, false);
-        }
-
-        _spawnedEnemies.Clear();
-    }
-
-    private void EnemyOutOfBoundaryhandler(Enemy enemy)
-    {
-        DespawnEnemy(enemy);
-    }
-
-    private void DespawnEnemy(Enemy enemy, bool clearFromList = true)
-    {
-        if (clearFromList) _spawnedEnemies.Remove(enemy);
-        Destroy(enemy.gameObject);
+        GameScore += points;
     }
 }

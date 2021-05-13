@@ -25,6 +25,11 @@ public class Projectile : MonoBehaviour
         _rb2D.velocity = transform.up * speed;
     }
 
+    public void SetSpeed()
+    {
+        SetSpeed(_speed);
+    }
+
     public void SetDamage(float damage)
     {
         _baseDamage = damage;

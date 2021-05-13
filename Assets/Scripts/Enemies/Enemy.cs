@@ -6,10 +6,10 @@ using System;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _maxHealth;
-    [SerializeField] private Vector3 _speed;
+    [SerializeField] protected Vector3 _speed;
     [SerializeField] private int _pointsValue = 1;
 
-    [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] protected Rigidbody2D _rb;
     [SerializeField] private Collider2D _collider;
     private BulletGenerator[] _weapons;
 
@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     public event Action<Enemy> OnDeath;
     public event Action<Enemy> OnBoundaryExit;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _health = _maxHealth;
         _alive = true;
@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour
         return _pointsValue;
     }
 
-    private void Move()
+    protected virtual void Move()
     {
         Vector3 movementVector = _speed * Time.fixedDeltaTime;
         _rb.MovePosition(transform.position + movementVector);
