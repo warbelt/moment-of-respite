@@ -15540,12 +15540,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 166de482ff5469f4fbcecb4af80bfe2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 5166067097645887262, guid: f95c0843d0dc6da43a4cf26351ead2d0, type: 3}
+  _enemiesInfo:
+  - enemyPrefab: {fileID: -2543690035059142811, guid: f95c0843d0dc6da43a4cf26351ead2d0, type: 3}
+    minRound: 0
+    maxRound: 0
+  - enemyPrefab: {fileID: 5166067097645887262, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+    minRound: 1
+    maxRound: 1
+  - enemyPrefab: {fileID: 2217308609229647688, guid: 2d63fbbf16c2b004684ef28219e05b4a, type: 3}
+    minRound: 2
+    maxRound: 99
   enemyStartY: 16
   enemyStartMinX: -8
   enemyStartMaxX: 8
-  enemySpawnInterval: 1
-  waveSpawnInterval: 7
+  enemySpawnInterval: 0.5
+  waveSpawnInterval: 6
+  _maxEnemyWaveCount: 6
 --- !u!4 &1364186830
 Transform:
   m_ObjectHideFlags: 0

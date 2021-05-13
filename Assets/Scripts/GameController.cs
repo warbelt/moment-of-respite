@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
             SetScore(_gameScore);
         }
     }
+    int _round;
 
     private void Awake()
     {
@@ -35,12 +36,14 @@ public class GameController : MonoBehaviour
     {
         // Initialize UI
         _uiController.StartDown();
-        StartCoroutine(StartRound());
         _uiController.OnUpgradeGaugeFull += UpgradePlayer;
         _uiController.OnReplayButtonPushed += ReplaySignal;
 
         // Initialize Managers
         _enemySpawner.Initialize();
+
+        // Start game
+        StartCoroutine(StartRound());
     }
 
     public void StartGame()
@@ -50,6 +53,7 @@ public class GameController : MonoBehaviour
         _player.enabled = true;
         _player.InitializeState();
         GameScore = 0;
+        _round = 0;
 
         _enemySpawner.onPointsGained += PointsGainedHandler;
         _isPlaying = true;
@@ -86,9 +90,10 @@ public class GameController : MonoBehaviour
 
     private IEnumerator StartRound()
     {
-        _enemySpawner.StartSpawning();
+        _round += 1;
+        _enemySpawner.StartSpawning(_round);
 
-        yield return new WaitForSeconds(20);
+        yield return new WaitForSeconds(30);
         StartCoroutine(EnterRespite());
     }
 
@@ -118,13 +123,16 @@ public class GameController : MonoBehaviour
 
     private void RestartGame()
     {
+        StopAllCoroutines();
+        
         _enemySpawner.DespawnAllEnemies();
 
         _player.ResetGame();
         _uiController.ResetGame();
         
         GameScore = 0;
-        StopAllCoroutines();
+        _round = 0;
+
         StartCoroutine(StartRound());
     }
 
