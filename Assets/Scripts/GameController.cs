@@ -126,6 +126,7 @@ public class GameController : MonoBehaviour
         StopAllCoroutines();
         
         _enemySpawner.DespawnAllEnemies();
+        _enemySpawner.DespawnAllEnemyProjectiles();
 
         _player.ResetGame();
         _uiController.ResetGame();
