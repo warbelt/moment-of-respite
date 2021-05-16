@@ -75,6 +75,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Curved Path
       objectReference: {fileID: 0}
+    - target: {fileID: 5166067099722934582, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a59f1d441c3f57b44bd112680af0641f, type: 3}
+    - target: {fileID: 5166067099722934582, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9c1f9b5848c485c418e98f1aafc40674, type: 2}
+    - target: {fileID: 5166067099722934583, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166067099722934583, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166067099722934583, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 180
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5166067097645887262, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b909569a803d10b419bf5eaba1dca11a, type: 3}
