@@ -22,6 +22,7 @@ public class EnemySpawner : MonoBehaviour
 
     public event Action<int> onPointsGained;
 
+    const string _enemyBulletTagName = "EnemyBullet";
 
     private void Update()
     {
@@ -99,6 +100,15 @@ public class EnemySpawner : MonoBehaviour
         }
 
         _spawnedEnemies.Clear();
+    }
+
+    public void DespawnAllEnemyProjectiles()
+    {
+        GameObject[] projectiles = GameObject.FindGameObjectsWithTag(_enemyBulletTagName);
+        foreach(GameObject projectile in projectiles)
+        {
+            Destroy(projectile);
+        }
     }
 
     private void DespawnEnemy(Enemy enemy, bool clearFromList = true)
