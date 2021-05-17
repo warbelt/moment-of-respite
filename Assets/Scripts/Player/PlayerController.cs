@@ -273,8 +273,7 @@ public class PlayerController : MonoBehaviour
                 bonus = 3;
                 concept = "Health";
                 _bonusMaxHealth += bonus;
-                // Invoke health UI update
-                Health = Health;
+                Health += bonus;
                 break;
             case 1:
                 bonus = 1;
@@ -285,7 +284,7 @@ public class PlayerController : MonoBehaviour
                 bonus = 100;
                 concept = "Shield";
                 _bonusMaxShieldCharge += bonus;
-                ShieldCharge = ShieldCharge;
+                ShieldCharge += bonus;
                 break;
             case 3:
                 bonus = 4;
@@ -307,7 +306,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        return String.Format("+{0} {1}", bonus, concept);
+        return string.Format("+{0} {1}", bonus, concept);
     }
 
     public void ResetGame()
