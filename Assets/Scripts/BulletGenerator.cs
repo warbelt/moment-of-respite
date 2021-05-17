@@ -44,7 +44,7 @@ public class BulletGenerator : MonoBehaviour
     {
         for (int i = 0; i < _settings.bulletsPerWave; i++)
         {
-            float angle = (-0.5f + i / (_settings.bulletsPerWave-1f)) * _settings.coneAperture;
+            float angle = (-0.5f + Mathf.Min(i / (_settings.bulletsPerWave-1f), 1)) * _settings.coneAperture;
             Projectile instancedBullet = Instantiate(_bullet, transform.position, transform.rotation);
             instancedBullet.transform.localRotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + angle);
             instancedBullet.SetSpeed();
