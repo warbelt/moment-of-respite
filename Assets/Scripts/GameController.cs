@@ -91,15 +91,18 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(activateDuration);
 
         var vel = _bgParticles.velocityOverLifetime;
-        vel.speedModifier = 20;
         var emission = _bgParticles.emission;
+
+        ParticleSystem.MinMaxCurve baseParticlesVelocityOverTimeSpeedModifier = vel.speedModifier;
+        float baseParticlesRateOverTimeModifier = emission.rateOverTimeMultiplier;
+        
+        vel.speedModifier = 20;
         emission.rateOverTimeMultiplier = 5;
-        var particleMain = _bgParticles.main;
 
         yield return new WaitForSeconds(10);
 
-        vel.speedModifier = 1;
-        emission.rateOverTimeMultiplier = 1;
+        vel.speedModifier = baseParticlesVelocityOverTimeSpeedModifier;
+        emission.rateOverTimeMultiplier = baseParticlesRateOverTimeModifier;
 
         _player.enabled = true;
         _uiController.DisableRespiteUI();
