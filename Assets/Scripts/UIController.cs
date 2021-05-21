@@ -33,7 +33,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _ammoDepletedText;
     [SerializeField] private TextMeshProUGUI _gameScoreText;
     [SerializeField] private Button _replayButton;
-
+    [SerializeField] private TextMeshProUGUI _gameMaxScoreText;
+    [SerializeField] private TextMeshProUGUI _mainMenuMaxScoreText;
+    [SerializeField] private GameObject _replayMenuHighScore;
 
     private bool _shieldDepletedTextFlashing = false;
     private bool _ammoDepletedTextFlashing = false;
@@ -48,7 +50,9 @@ public class UIController : MonoBehaviour
         _playerWeapon = _player.GetComponent<PlayerWeapon>();
         
         _respiteUI.gameObject.SetActive(false);
-        _replayButton.gameObject.SetActive(false);
+        
+        ResetGame();
+        
 
         _ammoDepletedTextFlashing = false;
         _shieldDepletedTextFlashing = false;
@@ -367,9 +371,16 @@ public class UIController : MonoBehaviour
         _gameScoreText.text = score.ToString();
     }
 
-    public void ActivateReplayButton()
+    public void SetMaxScoreText(int score)
+    {
+        _gameMaxScoreText.text = score.ToString();
+        _mainMenuMaxScoreText.text = score.ToString();
+    }
+
+    public void ActivateReplayMenu()
     {
         _replayButton.gameObject.SetActive(true);
+        _replayMenuHighScore.gameObject.SetActive(true);
     }
 
     public void ReplayButtonPushed()
@@ -380,5 +391,6 @@ public class UIController : MonoBehaviour
     public void ResetGame()
     {
         _replayButton.gameObject.SetActive(false);
+        _replayMenuHighScore.gameObject.SetActive(false);
     }
 }

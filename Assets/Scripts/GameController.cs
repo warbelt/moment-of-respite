@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class GameController : MonoBehaviour
 {
+    string CONST_PLAYERPREFS_KEY_MAXSCORE = "savedMaxScore";
+
+
     [SerializeField] private PlayerController _player;
     [SerializeField] private UIController _uiController;
     [SerializeField] private ParticleSystem _bgParticles;
@@ -14,6 +16,17 @@ public class GameController : MonoBehaviour
 
     //State
     bool _isPlaying;
+    int _maxScore;
+    int MaxScore
+    {
+        get => _maxScore;
+        set
+        {
+            _maxScore = value;
+            SetMaxScore(_maxScore);
+        }
+    }
+
     int _gameScore;
     int GameScore
     {
@@ -30,6 +43,7 @@ public class GameController : MonoBehaviour
     {
         _isPlaying = false;
         _player.enabled = false;
+        MaxScore = LoadMaxScore();
     }
 
     private void Start()
@@ -44,6 +58,11 @@ public class GameController : MonoBehaviour
 
         // Start game
         StartCoroutine(StartRound());
+    }
+
+    private void OnDestroy()
+    {
+        SaveMaxScore();
     }
 
     public void StartGame()
@@ -72,15 +91,18 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(activateDuration);
 
         var vel = _bgParticles.velocityOverLifetime;
-        vel.speedModifier = 20;
         var emission = _bgParticles.emission;
+
+        ParticleSystem.MinMaxCurve baseParticlesVelocityOverTimeSpeedModifier = vel.speedModifier;
+        float baseParticlesRateOverTimeModifier = emission.rateOverTimeMultiplier;
+        
+        vel.speedModifier = 20;
         emission.rateOverTimeMultiplier = 5;
-        var particleMain = _bgParticles.main;
 
         yield return new WaitForSeconds(10);
 
-        vel.speedModifier = 1;
-        emission.rateOverTimeMultiplier = 1;
+        vel.speedModifier = baseParticlesVelocityOverTimeSpeedModifier;
+        emission.rateOverTimeMultiplier = baseParticlesRateOverTimeModifier;
 
         _player.enabled = true;
         _uiController.DisableRespiteUI();
@@ -108,9 +130,23 @@ public class GameController : MonoBehaviour
         _uiController.SetScoreText(score);
     }
 
+    private void SetMaxScore(int maxScore)
+    {
+        _uiController.SetMaxScoreText(maxScore);
+    }
+
+    private void CheckMaxScore()
+    {
+        if (GameScore > MaxScore)
+        {
+            MaxScore = GameScore;
+        }
+    }
+
     private void PlayerDead()
     {
-        _uiController.ActivateReplayButton();
+        _uiController.ActivateReplayMenu();
+        CheckMaxScore();
     }
 
     private void ReplaySignal()
@@ -140,5 +176,15 @@ public class GameController : MonoBehaviour
     private void PointsGainedHandler(int points)
     {
         GameScore += points;
+    }
+
+    private void SaveMaxScore()
+    {
+        PlayerPrefs.SetInt(CONST_PLAYERPREFS_KEY_MAXSCORE, MaxScore);
+    }
+
+    private int LoadMaxScore()
+    {
+        return PlayerPrefs.GetInt(CONST_PLAYERPREFS_KEY_MAXSCORE, 0);
     }
 }
