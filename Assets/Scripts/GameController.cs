@@ -39,6 +39,8 @@ public class GameController : MonoBehaviour
     }
     int _round;
 
+    Coroutine _activeCoroutine = null;
+
     private void Awake()
     {
         _isPlaying = false;
@@ -107,7 +109,7 @@ public class GameController : MonoBehaviour
         _player.enabled = true;
         _uiController.DisableRespiteUI();
 
-        StartCoroutine(StartRound());
+        _activeCoroutine = StartCoroutine(StartRound());
     }
 
     private IEnumerator StartRound()
@@ -146,6 +148,7 @@ public class GameController : MonoBehaviour
     private void PlayerDead()
     {
         _uiController.ActivateReplayMenu();
+        StopCoroutine(_activeCoroutine);
         CheckMaxScore();
     }
 
@@ -159,7 +162,7 @@ public class GameController : MonoBehaviour
 
     private void RestartGame()
     {
-        StopAllCoroutines();
+        StopCoroutine(_activeCoroutine);
         
         _enemySpawner.DespawnAllEnemies();
         _enemySpawner.DespawnAllEnemyProjectiles();
@@ -170,7 +173,7 @@ public class GameController : MonoBehaviour
         GameScore = 0;
         _round = 0;
 
-        StartCoroutine(StartRound());
+        StopAllCoroutines();
     }
 
     private void PointsGainedHandler(int points)
