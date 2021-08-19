@@ -25,10 +25,13 @@ public class EnemyHover : Enemy
 
     private Vector3 _targetPosition;
 
+    private bool _targetReached;
+
     protected override void Move()
     {
-        if (Vector3.Distance(_targetPosition, transform.position) < 0.1)
+        if (!_targetReached && Vector3.Distance(_targetPosition, transform.position) < 0.3)
         {
+            _targetReached = true;
             StartCoroutine(PrepareNewPosition());
         }
 
@@ -52,6 +55,8 @@ public class EnemyHover : Enemy
 
             _targetPosition = new Vector3(_newX, _newY, 0f);
         } while (Vector3.Distance(_targetPosition, transform.position) < _retargetMinDistance);
+
+        _targetReached = false;
     }
 
     private IEnumerator PrepareNewPosition()
