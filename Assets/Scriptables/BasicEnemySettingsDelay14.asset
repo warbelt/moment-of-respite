@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19f5394ec26e4ec47b0c76d553d7f283, type: 3}
-  m_Name: BasicEnemySettingsDelay00
+  m_Name: BasicEnemySettingsDelay14
   m_EditorClassIdentifier: 
   repeat: 1
   bulletsPerSecond: 0.24
   coneAperture: 45
   bulletsPerWave: 1
   angularVelocityDegs: 0
-  delay: 0
+  delay: 1.4

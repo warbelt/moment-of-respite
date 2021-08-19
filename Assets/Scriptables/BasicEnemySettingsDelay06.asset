@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BasicEnemySettingsDelay06
   m_EditorClassIdentifier: 
   repeat: 1
-  bulletsPerSecond: 0.5
+  bulletsPerSecond: 0.24
   coneAperture: 45
-  bulletsPerWave: 3
-  angularVelocity: 0
+  bulletsPerWave: 1
+  angularVelocityDegs: 0
   delay: 0.6
