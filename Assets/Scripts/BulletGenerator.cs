@@ -13,7 +13,7 @@ public class BulletGenerator : MonoBehaviour
 
     void OnEnable()
     {
-        UpdateNextShoot();
+        _nextShoot = Time.time + 1;
         _nextShoot += _settings.delay;
     }
 
@@ -44,7 +44,17 @@ public class BulletGenerator : MonoBehaviour
     {
         for (int i = 0; i < _settings.bulletsPerWave; i++)
         {
-            float angle = (-0.5f + Mathf.Min(i / (_settings.bulletsPerWave-1f), 1)) * _settings.coneAperture;
+            float angle;
+            
+            if (_settings.bulletsPerWave == 1)
+            {
+                angle = 0;
+            }
+            else
+            {
+                angle = (-0.5f + Mathf.Min(i / (_settings.bulletsPerWave-1f), 1)) * _settings.coneAperture;
+            }
+
             Projectile instancedBullet = Instantiate(_bullet, transform.position, transform.rotation);
             instancedBullet.transform.localRotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + angle);
             instancedBullet.SetSpeed();
