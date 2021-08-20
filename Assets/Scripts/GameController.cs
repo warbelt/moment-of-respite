@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private UIController _uiController;
     [SerializeField] private ParticleSystem _bgParticles;
     [SerializeField] private EnemySpawner _enemySpawner;
+    [SerializeField] private MusicManager _musicManager;
 
     // Game configuration
     [SerializeField] float roundDuration = 10;
@@ -57,9 +58,7 @@ public class GameController : MonoBehaviour
 
         // Initialize Managers
         _enemySpawner.Initialize();
-
-        // Start game
-        StartCoroutine(StartRound());
+        _musicManager.ActivateMenuMusic();
     }
 
     private void OnDestroy()
@@ -76,12 +75,17 @@ public class GameController : MonoBehaviour
         GameScore = 0;
         _round = 0;
 
+        _musicManager.ActivateGamePlayMusic();
+        // Start game
+        _activeCoroutine = StartCoroutine(StartRound());
+
         _enemySpawner.onPointsGained += PointsGainedHandler;
         _isPlaying = true;
     }
 
     public IEnumerator EnterRespite()
     {
+        StartCoroutine(_musicManager.DimMusic(0.5f));
         _enemySpawner.StopSpawning();
 
         float activateDuration = 1;
@@ -109,6 +113,7 @@ public class GameController : MonoBehaviour
         _player.enabled = true;
         _uiController.DisableRespiteUI();
 
+        StartCoroutine(_musicManager.RestoreMusic(0.5f));
         _activeCoroutine = StartCoroutine(StartRound());
     }
 
@@ -117,7 +122,7 @@ public class GameController : MonoBehaviour
         _round += 1;
         _enemySpawner.StartSpawning(_round);
 
-        yield return new WaitForSeconds(30);
+        yield return new WaitForSeconds(roundDuration);
         StartCoroutine(EnterRespite());
     }
 
@@ -148,6 +153,7 @@ public class GameController : MonoBehaviour
     private void PlayerDead()
     {
         _uiController.ActivateReplayMenu();
+        _musicManager.ActivateMenuMusic();
         StopCoroutine(_activeCoroutine);
         CheckMaxScore();
     }
@@ -162,8 +168,6 @@ public class GameController : MonoBehaviour
 
     private void RestartGame()
     {
-        StopCoroutine(_activeCoroutine);
-        
         _enemySpawner.DespawnAllEnemies();
         _enemySpawner.DespawnAllEnemyProjectiles();
 
@@ -174,6 +178,9 @@ public class GameController : MonoBehaviour
         _round = 0;
 
         StopAllCoroutines();
+        _musicManager.ActivateGamePlayMusic();
+        _activeCoroutine = StartCoroutine(StartRound());
+
     }
 
     private void PointsGainedHandler(int points)

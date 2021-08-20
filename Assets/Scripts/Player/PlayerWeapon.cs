@@ -6,6 +6,8 @@ using System;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    [SerializeField] private AudioSource _shotAudioSource;
+
     [SerializeField] private float _shootsPerSecond;
     [SerializeField] private Projectile _projectilePrefab;
     [SerializeField] private int _maxAmmo;
@@ -57,6 +59,7 @@ public class PlayerWeapon : MonoBehaviour
             projectileInstance.SetSpeed(_bulletSpeed + _bulletSpeedBonus);
             projectileInstance.SetBonusDamage(projectileInstance.GetBonusDamage() + _damageBonus);
 
+            _shotAudioSource.Play();
             Ammo -= 1;
 
             UpdateNextShoot();

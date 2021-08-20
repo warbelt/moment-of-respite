@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private ParticleSystem _deathParticles;
     [SerializeField] private Transform _startPosition;
     [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private AudioSource _deadAudioSource;
 
     // Stats
     [Header("Stats")]
@@ -218,8 +219,13 @@ public class PlayerController : MonoBehaviour
         if (Health <= 0)
         {
             _deathParticles.Emit(50);
-            DisableControl();
-            onDeath?.Invoke();
+            if(_isAlive)
+            {
+                DisableControl();
+                onDeath?.Invoke();
+                _deadAudioSource.Play();
+                _isAlive = false;
+            }
         }
     }
 
