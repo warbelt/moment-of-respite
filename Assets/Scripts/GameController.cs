@@ -167,7 +167,7 @@ public class GameController : MonoBehaviour
     }
 
     private void RestartGame()
-    {       
+    {
         _enemySpawner.DespawnAllEnemies();
         _enemySpawner.DespawnAllEnemyProjectiles();
 

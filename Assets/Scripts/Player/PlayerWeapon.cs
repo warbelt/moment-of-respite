@@ -6,6 +6,8 @@ using System;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    private AudioSource _shotAudioSource;
+
     [SerializeField] private float _shootsPerSecond;
     [SerializeField] private Projectile _projectilePrefab;
     [SerializeField] private int _maxAmmo;
@@ -34,6 +36,7 @@ public class PlayerWeapon : MonoBehaviour
     private void Awake()
     {
         Ammo = _maxAmmo;
+        _shotAudioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -57,6 +60,7 @@ public class PlayerWeapon : MonoBehaviour
             projectileInstance.SetSpeed(_bulletSpeed + _bulletSpeedBonus);
             projectileInstance.SetBonusDamage(projectileInstance.GetBonusDamage() + _damageBonus);
 
+            _shotAudioSource.Play();
             Ammo -= 1;
 
             UpdateNextShoot();

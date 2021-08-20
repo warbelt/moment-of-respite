@@ -218,8 +218,12 @@ public class PlayerController : MonoBehaviour
         if (Health <= 0)
         {
             _deathParticles.Emit(50);
-            DisableControl();
-            onDeath?.Invoke();
+            if(_isAlive)
+            {
+                DisableControl();
+                onDeath?.Invoke();
+                _isAlive = false;
+            }
         }
     }
 

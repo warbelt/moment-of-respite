@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private ParticleSystem _damageParticles;
     [SerializeField] private ParticleSystem _deathParticles;
 
+    [SerializeField] private AudioSource _audioSource;
+
     //State
     private float _health;
     private bool _alive;
@@ -28,6 +30,7 @@ public class Enemy : MonoBehaviour
         _health = _maxHealth;
         _alive = true;
         _weapons = GetComponentsInChildren<BulletGenerator>();
+        _audioSource = GetComponentInChildren<AudioSource>();
     }
 
     void FixedUpdate()
@@ -78,6 +81,7 @@ public class Enemy : MonoBehaviour
         }
 
         _deathParticles.Emit(50);
+        _audioSource.Play();
         OnDeath?.Invoke(this);
     }
 
