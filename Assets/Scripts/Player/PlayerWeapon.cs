@@ -6,7 +6,7 @@ using System;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    private AudioSource _shotAudioSource;
+    [SerializeField] private AudioSource _shotAudioSource;
 
     [SerializeField] private float _shootsPerSecond;
     [SerializeField] private Projectile _projectilePrefab;
@@ -36,7 +36,6 @@ public class PlayerWeapon : MonoBehaviour
     private void Awake()
     {
         Ammo = _maxAmmo;
-        _shotAudioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
