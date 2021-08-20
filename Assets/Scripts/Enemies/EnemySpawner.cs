@@ -12,7 +12,7 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] float enemySpawnInterval;
     [SerializeField] float waveSpawnInterval;
-    [SerializeField] int _maxEnemyWaveCount = 6;
+    [SerializeField] int _maxEnemyWaveCount = 9;
     
     private bool _spawning;
 
@@ -58,8 +58,8 @@ public class EnemySpawner : MonoBehaviour
     {
         // Waves have 1 more enemy every 4 rounds
         int waveSize = Mathf.Min(UnityEngine.Random.Range(
-            1 + (int) Math.Floor(_currentRound / 4f), 
-            3 + (int) Math.Floor(_currentRound / 4f)
+            1 + (int) Math.Floor(_currentRound / 3f), 
+            3 + (int) Math.Floor(_currentRound / 3f)
         ), _maxEnemyWaveCount);
 
         for (int i = 0; i < waveSize; i++)
@@ -83,7 +83,7 @@ public class EnemySpawner : MonoBehaviour
         while (toSpawn == null)
         {
             var enemyInfo = _enemiesInfo[UnityEngine.Random.Range(0, _enemiesInfo.Length)];
-            if (enemyInfo.MinRound <= _currentRound && _currentRound <= enemyInfo.MaxRound)
+            if (enemyInfo.MinRound <= round && round <= enemyInfo.MaxRound)
             {
                 toSpawn = enemyInfo.EnemyPrefab;
             }
