@@ -179,6 +179,7 @@ public class GameController : MonoBehaviour
 
         StopAllCoroutines();
         _musicManager.ActivateGamePlayMusic();
+        _activeCoroutine = StartCoroutine(StartRound());
 
     }
 
