@@ -24,7 +24,7 @@ public class PowerLeverController : MonoBehaviour
     {
         _powerLevelGauge.color = _powerLevelGaugeGradient.Evaluate(gaugeLevel);
 
-        if (gaugeLevel == 1)
+        if (gaugeLevel == 1 && OnShieldGaugeFull != null)
         {
             OnShieldGaugeFull.Invoke();
         }
