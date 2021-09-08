@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private Collider2D _collider;
     [SerializeField] private GameObject _shield;
+    [SerializeField] private GameObject _respiteShield;
     [SerializeField] private PlayerWeapon _weapon;
     [SerializeField] private ParticleSystem _damageParticles;
     [SerializeField] private ParticleSystem _deathParticles;
@@ -139,6 +140,7 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         _shield.SetActive(false);
+        SetRespiteShieldActive(false);
         _collider.enabled = true;
 
     }
@@ -159,6 +161,8 @@ public class PlayerController : MonoBehaviour
         _isControllable = true;
         _shieldActive = false;
         _isShooting = false;
+
+        SetRespiteShieldActive(false);
 
         _bonusMaxHealth = 0;
         _bonusMoveSpeed = 0;
@@ -348,5 +352,10 @@ public class PlayerController : MonoBehaviour
         }
 
         _renderer.enabled = true;
+    }
+
+    public void SetRespiteShieldActive(bool active)
+    {
+        _respiteShield.SetActive(active);
     }
 }
