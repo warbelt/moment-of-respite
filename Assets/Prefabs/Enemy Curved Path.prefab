@@ -9901,7 +9901,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 5
-  _speed: {x: 1, y: -3.3, z: 0}
+  _speed: {x: 1, y: -2.4, z: 0}
   _pointsValue: 1
   _rb: {fileID: 4510898971349520682}
   _collider: {fileID: 4510898971349520683}
