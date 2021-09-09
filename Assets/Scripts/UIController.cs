@@ -158,8 +158,9 @@ public class UIController : MonoBehaviour
 
     public void UpdateAmmo(int currentAmmo, int maxAmmo)
     {
-        int activeSlots = Mathf.CeilToInt(maxAmmo / 10);
-        int fullSlots = Mathf.CeilToInt(currentAmmo / 10);
+        int activeSlots = 10;
+        int bulletsPerSlot = maxAmmo / activeSlots;
+        int fullSlots = Mathf.FloorToInt((float)currentAmmo / bulletsPerSlot);
 
         for (int slot = 0; slot < _ammoSlots.Length; slot++)
         {
@@ -172,8 +173,9 @@ public class UIController : MonoBehaviour
             }
             else if (slot == fullSlots)
             {
-                ammoChargeImage.fillAmount = (currentAmmo % 10) / 10f;
-                ammoChargeImage.color = _ammoChargeGradient.Evaluate((currentAmmo % 10) / 10f);
+                ammoChargeImage.fillAmount = (float)(currentAmmo % bulletsPerSlot) / bulletsPerSlot;
+                ammoChargeImage.color = _ammoChargeGradient.Evaluate(
+                    (float)(currentAmmo % bulletsPerSlot) / bulletsPerSlot);
             }
             else
             {
