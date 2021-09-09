@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5609150065122650564}
   m_Layer: 9
   m_Name: EnemyBullet
-  m_TagString: Untagged
+  m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,6 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 12
   _timeToLive: 5
+  _baseDamage: 1
+  _bonusDamage: 1
   _rb2D: {fileID: 8500015613893041294}
 --- !u!50 &8500015613893041294
 Rigidbody2D:

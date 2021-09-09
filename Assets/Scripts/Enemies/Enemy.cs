@@ -6,35 +6,43 @@ using System;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _maxHealth;
-    [SerializeField] private Vector3 _speed;
+    [SerializeField] protected Vector3 _speed;
+    [SerializeField] private int _pointsValue = 1;
 
-    [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] protected Rigidbody2D _rb;
     [SerializeField] private Collider2D _collider;
     private BulletGenerator[] _weapons;
 
     [SerializeField] private ParticleSystem _damageParticles;
     [SerializeField] private ParticleSystem _deathParticles;
 
+    [SerializeField] private AudioSource _audioSource;
+
     //State
     private float _health;
     private bool _alive;
 
-    public event Action OnDeath;
+    public event Action<Enemy> OnDeath;
+    public event Action<Enemy> OnBoundaryExit;
 
-
-    private void Awake()
+    protected virtual void Awake()
     {
         _health = _maxHealth;
         _alive = true;
         _weapons = GetComponentsInChildren<BulletGenerator>();
+        _audioSource = GetComponentInChildren<AudioSource>();
+
+        if (UnityEngine.Random.value >= 0.5f)
+        {
+            _speed = new Vector3(-_speed.x, _speed.y, _speed.z);
+        }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (_alive)
         {
-            Vector3 movementVector = _speed * Time.deltaTime;
-            _rb.MovePosition(transform.position + movementVector);
+            Move();
         }
     }
 
@@ -47,9 +55,12 @@ public class Enemy : MonoBehaviour
             {
                 Damage(hittingProjectile.GetDamage());
                 Destroy(collision.gameObject);
-
             } 
+        }
 
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("GameBoundaries"))
+        {
+            OnBoundaryExit?.Invoke(this);
         }
     }
 
@@ -64,7 +75,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Die()
+    public void Die()
     {
         _alive = false;
 
@@ -75,7 +86,18 @@ public class Enemy : MonoBehaviour
         }
 
         _deathParticles.Emit(50);
-        OnDeath?.Invoke();
-        Destroy(gameObject, 0.5f);
+        _audioSource.Play();
+        OnDeath?.Invoke(this);
+    }
+
+    public int GetPointsValue()
+    {
+        return _pointsValue;
+    }
+
+    protected virtual void Move()
+    {
+        Vector3 movementVector = _speed * Time.fixedDeltaTime;
+        _rb.MovePosition(transform.position + movementVector);
     }
 }

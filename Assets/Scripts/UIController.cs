@@ -23,24 +23,46 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image _healthBar;
     [SerializeField] private Animator _healthBarAnimator;
     [SerializeField] private Image _shieldBar;
+    [SerializeField] private RectTransform _shipUI;
     [SerializeField] private RectTransform _respiteUI;
     [SerializeField] private GameObject[] _ammoSlots;
     [SerializeField] private GameObject _ammoRechargeContainer;
     [SerializeField] private TextMeshProUGUI _timer;
     [SerializeField] private UpgradeGauge _upgradeGauge;
     [SerializeField] private TextMeshProUGUI _upgradeText;
+    [SerializeField] private TextMeshProUGUI _shieldDepletedText;
+    [SerializeField] private TextMeshProUGUI _ammoDepletedText;
+    [SerializeField] private TextMeshProUGUI _gameScoreText;
+    [SerializeField] private Button _replayButton;
+    [SerializeField] private TextMeshProUGUI _gameMaxScoreText;
+    [SerializeField] private TextMeshProUGUI _mainMenuMaxScoreText;
+    [SerializeField] private GameObject _replayMenuHighScore;
+
+    private bool _shieldDepletedTextFlashing = false;
+    private bool _ammoDepletedTextFlashing = false;
 
     // UI Events
     public event Action OnUpgradeGaugeFull;
+    public event Action OnReplayButtonPushed;
 
     // Start is called before the first frame update
     void Start()
     {
+        _playerWeapon = _player.GetComponent<PlayerWeapon>();
+        
         _respiteUI.gameObject.SetActive(false);
+        
+        ResetGame();
+        
 
+        _ammoDepletedTextFlashing = false;
+        _shieldDepletedTextFlashing = false;
+        
         _player.onHealthChange += UpdateHealthBar;
         _player.onShieldChange += UpdateShieldBar;
-        _playerWeapon = _player.GetComponent<PlayerWeapon>();
+        _player.onShieldDepleted += ShieldDepletedHandler;
+        _playerWeapon.onAmmoDepleted += AmmoDepletedHandler;
+
         _playerWeapon.onAmmoCountChange += UpdateAmmo;
 
         BulletRecharge[] _bulletRecharges = _ammoRechargeContainer.GetComponentsInChildren<BulletRecharge>();
@@ -61,7 +83,64 @@ public class UIController : MonoBehaviour
         _upgradeText.text = "";
 
         SetTimer("");
+    }
 
+    private void ShieldDepletedHandler()
+    {
+        if (!_shieldDepletedTextFlashing)
+        {
+            StartCoroutine(FlashShieldText(3));
+        }
+    }
+    
+    private void AmmoDepletedHandler()
+    {
+        if (!_ammoDepletedTextFlashing)
+        {
+            StartCoroutine(FlashAmmoText(3));
+        }
+    }
+
+    private IEnumerator FlashShieldText(float duration)
+    {
+        if (!_shieldDepletedTextFlashing)
+        {
+            _shieldDepletedTextFlashing = true;
+        }
+
+        float elapsed = 0;
+        float interval = 0.5f;
+
+        while(elapsed <= duration && _shieldDepletedTextFlashing)
+        {
+            _shieldDepletedText.enabled = !_shieldDepletedText.enabled;
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+
+        _shieldDepletedTextFlashing = false;
+        _shieldDepletedText.enabled = false;
+    }
+
+    private IEnumerator FlashAmmoText(float duration)
+    {
+        if (!_ammoDepletedTextFlashing)
+        {
+            _ammoDepletedTextFlashing = true;
+        }
+
+        float elapsed = 0;
+        float interval = 0.5f;
+
+        while (elapsed <= duration && _ammoDepletedTextFlashing)
+        {
+            _ammoDepletedText.enabled = !_ammoDepletedText.enabled;
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+
+        _ammoDepletedTextFlashing = false;
+        _ammoDepletedText.enabled = false;
     }
 
     public void UpdateHealthBar(float health, float maxHealth)
@@ -79,8 +158,9 @@ public class UIController : MonoBehaviour
 
     public void UpdateAmmo(int currentAmmo, int maxAmmo)
     {
-        int activeSlots = Mathf.CeilToInt(maxAmmo / 10);
-        int fullSlots = Mathf.CeilToInt(currentAmmo / 10);
+        int activeSlots = 10;
+        int bulletsPerSlot = maxAmmo / activeSlots;
+        int fullSlots = Mathf.FloorToInt((float)currentAmmo / bulletsPerSlot);
 
         for (int slot = 0; slot < _ammoSlots.Length; slot++)
         {
@@ -93,8 +173,9 @@ public class UIController : MonoBehaviour
             }
             else if (slot == fullSlots)
             {
-                ammoChargeImage.fillAmount = (currentAmmo % 10) / 10f;
-                ammoChargeImage.color = _ammoChargeGradient.Evaluate((currentAmmo % 10) / 10f);
+                ammoChargeImage.fillAmount = (float)(currentAmmo % bulletsPerSlot) / bulletsPerSlot;
+                ammoChargeImage.color = _ammoChargeGradient.Evaluate(
+                    (float)(currentAmmo % bulletsPerSlot) / bulletsPerSlot);
             }
             else
             {
@@ -286,5 +367,38 @@ public class UIController : MonoBehaviour
 
         _upgradeText.rectTransform.anchoredPosition = Vector2.zero;
         yield return new WaitForSeconds(1.5f);
+    }
+
+    public void SetScoreText(int score)
+    {
+        _gameScoreText.text = score.ToString();
+    }
+
+    public void SetMaxScoreText(int score)
+    {
+        _gameMaxScoreText.text = score.ToString();
+        _mainMenuMaxScoreText.text = score.ToString();
+    }
+
+    public void ActivateReplayMenu()
+    {
+        _replayButton.gameObject.SetActive(true);
+        _replayMenuHighScore.gameObject.SetActive(true);
+    }
+
+    public void ReplayButtonPushed()
+    {
+        OnReplayButtonPushed?.Invoke();
+    }
+
+    public void ResetGame()
+    {
+        _replayButton.gameObject.SetActive(false);
+        _replayMenuHighScore.gameObject.SetActive(false);
+    }
+
+    public void SetHiddenForTutorial(bool hidden)
+    {
+        _shipUI.gameObject.SetActive(!hidden);
     }
 }

@@ -9,6 +9,6 @@ public class BulletGeneratorSettings : ScriptableObject
     public float bulletsPerSecond = 3;
     public float coneAperture = 45;
     public int bulletsPerWave = 1;
-    public float angularVelocity = 0;
+    public float angularVelocityDegs = 0;
     public float delay = 0;
 }
