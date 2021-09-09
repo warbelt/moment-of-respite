@@ -23,6 +23,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image _healthBar;
     [SerializeField] private Animator _healthBarAnimator;
     [SerializeField] private Image _shieldBar;
+    [SerializeField] private RectTransform _shipUI;
     [SerializeField] private RectTransform _respiteUI;
     [SerializeField] private GameObject[] _ammoSlots;
     [SerializeField] private GameObject _ammoRechargeContainer;
@@ -392,5 +393,10 @@ public class UIController : MonoBehaviour
     {
         _replayButton.gameObject.SetActive(false);
         _replayMenuHighScore.gameObject.SetActive(false);
+    }
+
+    public void SetHiddenForTutorial(bool hidden)
+    {
+        _shipUI.gameObject.SetActive(!hidden);
     }
 }
