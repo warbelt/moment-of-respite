@@ -44,7 +44,7 @@ public class EnemySpawner : MonoBehaviour
 
     public void StartSpawning(int round)
     {
-        _nextEnemySpawn = Time.time + waveSpawnInterval;
+        _nextEnemySpawn = Time.time + 1;
         _spawning = true;
         _currentRound = round;
     }
@@ -58,8 +58,8 @@ public class EnemySpawner : MonoBehaviour
     {
         // Waves have 1 more enemy every 4 rounds
         int waveSize = Mathf.Min(UnityEngine.Random.Range(
-            1 + (int) Math.Floor(_currentRound / 3f), 
-            3 + (int) Math.Floor(_currentRound / 3f)
+            2 + (int) Math.Floor(_currentRound / 2.5f), 
+            4 + (int) Math.Floor(_currentRound / 2.5f)
         ), _maxEnemyWaveCount);
 
         for (int i = 0; i < waveSize; i++)
