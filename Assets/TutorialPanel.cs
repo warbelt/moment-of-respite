@@ -251,4 +251,12 @@ public class TutorialPanel : MonoBehaviour
     {
         _tutorialEndButonPushed = true;
     }
+
+    public void OnSkipButtonPushed()
+    {
+        if (onTutorialEnded != null)
+        {
+            onTutorialEnded.Invoke();
+        }
+    }
 }
