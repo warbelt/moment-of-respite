@@ -83,7 +83,7 @@ public class PlayerWeapon : MonoBehaviour
 
     public void Recharge()
     {
-        Ammo += 10;
+        Ammo += _maxAmmo / 10;
     }
 
     public void ResetGame()

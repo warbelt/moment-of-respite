@@ -10241,7 +10241,7 @@ MonoBehaviour:
   _shotAudioSource: {fileID: 2203042960465422436}
   _shootsPerSecond: 3
   _projectilePrefab: {fileID: 759588031180510493, guid: 1bc2336dba8f3c34e9fe551316b8959f, type: 3}
-  _maxAmmo: 100
+  _maxAmmo: 150
   _bulletSpeed: 12
   _bulletSpeedBonus: 0
   _damageBonus: 0
