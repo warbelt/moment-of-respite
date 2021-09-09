@@ -31,6 +31,11 @@ public class Enemy : MonoBehaviour
         _alive = true;
         _weapons = GetComponentsInChildren<BulletGenerator>();
         _audioSource = GetComponentInChildren<AudioSource>();
+
+        if (UnityEngine.Random.value >= 0.5f)
+        {
+            _speed = new Vector3(-_speed.x, _speed.y, _speed.z);
+        }
     }
 
     void FixedUpdate()
