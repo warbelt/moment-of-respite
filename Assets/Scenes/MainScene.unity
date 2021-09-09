@@ -1114,7 +1114,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0.6
   m_FillClockwise: 1
   m_FillOrigin: 1
   m_UseSpriteMesh: 0
@@ -13650,10 +13650,13 @@ MonoBehaviour:
   _upgradeTutorial: {fileID: 270756353}
   _tutorialEndedPanel: {fileID: 719087653}
   _healthBar: {fileID: 844629974}
+  _shieldBar: {fileID: 954880025}
+  _rechargeShieldBar: {fileID: 75999310}
   _powerLeverController: {fileID: 604183120}
   _emptyBulletSlot: {fileID: 675157364}
   _filledBulletSlot: {fileID: 1531263577}
   _upgradeGauge: {fileID: 101483633}
+  _upgradeText: {fileID: 1626316862}
 --- !u!1 &487907048
 GameObject:
   m_ObjectHideFlags: 0

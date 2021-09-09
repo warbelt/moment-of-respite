@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 
 public class TutorialPanel : MonoBehaviour
 {
@@ -23,10 +24,13 @@ public class TutorialPanel : MonoBehaviour
 
     [Header("UI references")]
     [SerializeField] private Image _healthBar;
+    [SerializeField] private Image _shieldBar;
+    [SerializeField] private Image _rechargeShieldBar;
     [SerializeField] private PowerLeverController _powerLeverController;
     [SerializeField] private BulletRechargeSlot _emptyBulletSlot;
     [SerializeField] private GameObject _filledBulletSlot;
     [SerializeField] private UpgradeGauge _upgradeGauge;
+    [SerializeField] private TextMeshProUGUI _upgradeText;
 
     private bool _movedUp = false;
     private bool _movedDown = false;
@@ -112,9 +116,17 @@ public class TutorialPanel : MonoBehaviour
 
         // Shield tutorial
         _shieldTutorial.SetActive(true);
+        _shieldBar.fillAmount = 1;
         _usedShield = false;
         yield return new WaitUntil(() => _usedShield);
-        yield return new WaitForSeconds(2);
+        float elapsed = 0, duration = 2, shieldSpent = 0.4f;
+        while (elapsed < duration)
+        {
+            _shieldBar.fillAmount = 1 - elapsed / duration * shieldSpent;
+            elapsed += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        _shieldBar.fillAmount = 1 - shieldSpent;
         _shieldTutorial.SetActive(false);
 
         // Respite tutorial
@@ -140,8 +152,20 @@ public class TutorialPanel : MonoBehaviour
 
         // Shield Recharge Tutorial
         _shieldRechargeTutorial.SetActive(true);
+        _rechargeShieldBar.fillAmount = 0.6f;
         _rechargedShield = false;
         yield return new WaitUntil(() => _rechargedShield);
+        _rechargeShieldBar.fillAmount = 0.7f;
+        _rechargedShield = false;
+        yield return new WaitUntil(() => _rechargedShield);
+        _rechargeShieldBar.fillAmount = 0.8f;
+        _rechargedShield = false;
+        yield return new WaitUntil(() => _rechargedShield);
+        _rechargeShieldBar.fillAmount = 0.9f;
+        _rechargedShield = false;
+        yield return new WaitUntil(() => _rechargedShield);
+        _rechargeShieldBar.fillAmount = 1.0f;
+
         yield return new WaitForSeconds(2);
         _shieldRechargeTutorial.SetActive(false);
 
@@ -159,7 +183,10 @@ public class TutorialPanel : MonoBehaviour
         // Upgrades Tutorial
         _upgradeTutorial.SetActive(true);
         _upgraded = false;
+        _upgradeText.text = "";
         yield return new WaitUntil(() => _upgraded);
+        _upgradeText.text = "+2 SPEED";
+
         yield return new WaitForSeconds(2);
         _upgradeTutorial.SetActive(false);
 
