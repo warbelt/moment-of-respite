@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: Squarewave SDF
+  m_Name: Squarewave SDF NEON
   m_EditorClassIdentifier: 
-  hashCode: -2041139787
+  hashCode: 556473695
   material: {fileID: 873994053676205305}
-  materialHashCode: 1671601013
+  materialHashCode: -1451161569
   m_Version: 1.1.0
   m_SourceFontFileGUID: 1d4bbc8e9abf8044a8e7afe4eaa018e9
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 1d4bbc8e9abf8044a8e7afe4eaa018e9, type: 3}
