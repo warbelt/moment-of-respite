@@ -222,7 +222,7 @@ public class UIController : MonoBehaviour
     private void ShowEmptyAmmoSlots()
     {
         int currentAmmo = _playerWeapon.GetAmmo();
-        int fullAmmoSlots = Mathf.FloorToInt(currentAmmo / 10f);
+        int fullAmmoSlots = Mathf.FloorToInt(currentAmmo / 15f);
 
         for (int slot = fullAmmoSlots; slot < _ammoSlots.Length; slot++)
         {
